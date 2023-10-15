@@ -3,6 +3,9 @@ package com.aliments.microservices.currencyconversionservice.controller;
 import com.aliments.microservices.currencyconversionservice.beans.CurrencyConversion;
 import com.aliments.microservices.currencyconversionservice.proxy.CurrencyExchangeProxy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,11 +16,27 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
+@Configuration(proxyBeanMethods = false)
+class RestTemplateConfiguration {
+
+    @Bean
+    RestTemplate restTemplate(RestTemplateBuilder builder) {
+        return builder.build();
+    }
+    @Bean
+    public RestTemplateBuilder restTemplateBuilder() {
+        return new RestTemplateBuilder();
+    }
+}
+
 @RestController
 public class CurrencyConversionController {
 
     @Autowired
     CurrencyExchangeProxy currencyExchangeProxy;
+
+    @Autowired
+    RestTemplate restTemplate;
 
     @GetMapping("/currency-conversion/from/{from}/to/{to}/quantity/{quantity}")
     public CurrencyConversion calculateCurrencyConversion(@PathVariable String from,
@@ -26,7 +45,9 @@ public class CurrencyConversionController {
         HashMap<String, String> uriVariables = new HashMap<>();
         uriVariables.put("from", from);
         uriVariables.put("to", to);
-        ResponseEntity<CurrencyConversion> resEntity = new RestTemplate().getForEntity("http://localhost:8000/currency-exchange/from/{from}/to/{to}",
+        /*ResponseEntity<CurrencyConversion> resEntity = new RestTemplate().getForEntity("http://localhost:8000/currency-exchange/from/{from}/to/{to}",
+                CurrencyConversion.class, uriVariables);*/
+        ResponseEntity<CurrencyConversion> resEntity = restTemplate.getForEntity("http://localhost:8000/currency-exchange/from/{from}/to/{to}",
                 CurrencyConversion.class, uriVariables);
         CurrencyConversion currencyConversion = resEntity.getBody();
         return new CurrencyConversion(currencyConversion.getId(),from, to, currencyConversion.getConversionMultiple(), quantity,
