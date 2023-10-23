@@ -1,4 +1,4 @@
-package com.aliments.microservices.currencyexchangeservice;
+package com.aliments.microservices.currencyexchangeservice.service;
 
 import com.aliments.microservices.currencyexchangeservice.beans.CurrencyExchange;
 import com.aliments.microservices.currencyexchangeservice.exception.ExchangeValueException;
@@ -21,7 +21,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
 @ExtendWith(MockitoExtension.class)
 public class CurrencyExchangeServiceApplicationTests {
 

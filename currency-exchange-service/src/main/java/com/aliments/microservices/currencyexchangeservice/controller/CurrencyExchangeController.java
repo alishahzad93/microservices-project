@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.math.BigDecimal;
-
 @RestController
 public class CurrencyExchangeController {
 
@@ -44,6 +42,7 @@ public class CurrencyExchangeController {
         ResponseEntity<String> forEntity = new RestTemplate().getForEntity("http://localhost:8765/some-api", String.class);
         return forEntity.getBody();
     }
+
     public String hardcodedResponse(HttpClientErrorException ex) {
         return "Http fallback response";
     }
